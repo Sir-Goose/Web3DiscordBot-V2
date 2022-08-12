@@ -127,4 +127,4 @@ def meta_joke(message):
 
 
 # This has to be at the bottom of the file. No idea why but it doesn't work otherwise.
-client.run('MTAwNzAyOTUwMjgyNTczMDE3OQ.GdchPi.8KVQ2sUCOLaW_C4W_s0JhUlLtRwjNrjzFUSDVQ')
+client.run('')

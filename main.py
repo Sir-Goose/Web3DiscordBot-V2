@@ -21,19 +21,27 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
+    print(f"{message.author}: {message.content}")
     is_meta = meta_joke(message.content)
     if is_meta:
-        await message.channel.send("Did you mean Facebook?", reference=message)
+        reply = "Did you mean Facebook?"
+        await message.channel.send(reply, reference=message)
+        print(f"<{reply}>")
         return
 
     user_message_list = message.content.split()
     print(user_message_list)
     output = control_flow(user_message_list)
-    if output != True:
+    if output is None:
+        return
+    elif output != True:
+        print(f"<{output}>")
         await message.channel.send(output, reference=message)
-    elif output == True:
+    elif output:
         emoji = '\N{THUMBS UP SIGN}'
         await message.add_reaction(emoji)
+        print(f"<{emoji}>")
+        return
 
 
 def control_flow(user_message_list):
@@ -114,7 +122,9 @@ def meta_joke(message):
     for i in range(len(message)):
         if message[i].lower() == 'meta':
             return True
+        else:
+            return False
 
 
 # This has to be at the bottom of the file. No idea why but it doesn't work otherwise.
-client.run('')
+client.run('MTAwNzAyOTUwMjgyNTczMDE3OQ.GdchPi.8KVQ2sUCOLaW_C4W_s0JhUlLtRwjNrjzFUSDVQ')

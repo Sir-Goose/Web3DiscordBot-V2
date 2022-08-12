@@ -46,11 +46,12 @@ async def on_message(message):
 
 def control_flow(user_message_list):
     user_message_prefix = user_message_list[0].lower()
-    token = user_message_list[1].lower()
     try:
+        token = user_message_list[1].lower()
         date = user_message_list[2]
-    except:
+    except IndexError:
         pass
+
 
     if user_message_prefix == '$p':
 

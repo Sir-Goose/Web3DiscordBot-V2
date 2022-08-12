@@ -1,8 +1,4 @@
 import discord
-import os
-import requests
-import json
-import csv
 import pandas as pd
 
 import formatter
@@ -24,6 +20,10 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.author == client.user:
+        return
+    is_meta = meta_joke(message.content)
+    if is_meta:
+        await message.channel.send("Did you mean Facebook?", reference=message)
         return
 
     user_message_list = message.content.split()
@@ -69,12 +69,18 @@ def control_flow(user_message_list):
 
     if user_message_prefix == '$request':
         bool = record_request(user_message_list)
-        if bool == True:
+        if bool:
             return True
 
     if user_message_prefix == '$convert':
         output = convert_tokens(user_message_list, cg_tokens_dict)
         output = formatter.format_conversion(output)
+        return output
+
+    if user_message_prefix == '$imp':
+        type = 'imp_price'
+        output = price.get_imp_price(token, type)
+        output = formatter.format_imp(output)
         return output
 
 
@@ -101,6 +107,13 @@ def record_request(user_message_list):
         print(message_text, file=external_file)
         external_file.close()
         return True
+
+
+def meta_joke(message):
+    message = message.split()
+    for i in range(len(message)):
+        if message[i].lower() == 'meta':
+            return True
 
 
 # This has to be at the bottom of the file. No idea why but it doesn't work otherwise.

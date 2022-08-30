@@ -35,3 +35,14 @@ def format_status(output):
     output = round(output, 2)
     output = f"IMP {str(output)} USD"
     return output
+
+
+def format_stock(token, output):
+    price = round(output, 2)
+    token = token.upper()
+    output = f"```{token} ${price} USD```"
+    return output
+
+
+
+

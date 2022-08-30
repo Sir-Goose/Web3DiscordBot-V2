@@ -1,6 +1,7 @@
 import discord
 import pandas as pd
 
+import charting
 import formatter
 import price
 
@@ -34,6 +35,12 @@ async def on_message(message):
     output = control_flow(user_message_list)
     if output is None:
         return
+    elif output == 'chart.png':
+        print("sending chart")
+        with open('chart.png', 'rb') as chart:
+
+            picture = discord.File(chart)
+            await message.channel.send(file=picture, reference=message)
     elif output != True:
         print(f"<{output}>")
         await message.channel.send(output, reference=message)
@@ -48,10 +55,11 @@ def control_flow(user_message_list):
     user_message_prefix = user_message_list[0].lower()
     try:
         token = user_message_list[1].lower()
+        period = user_message_list[2].lower()
+        interval = user_message_list[3].lower()
         date = user_message_list[2]
     except IndexError:
         pass
-
 
     if user_message_prefix == '$p':
 
@@ -87,10 +95,22 @@ def control_flow(user_message_list):
         return output
 
     if user_message_prefix == '$imp':
+        token = 'imp'
         type = 'imp_price'
         output = price.get_imp_price(token, type)
         output = formatter.format_imp(output)
         return output
+
+    if user_message_prefix == '$s' or user_message_prefix == '$stock':
+        output = price.get_stock_price(token)
+        output = formatter.format_stock(token, output)
+        return output
+
+    if user_message_prefix == '$c' or user_message_prefix == '$chart':
+        output = charting.get_chart(token, period, interval)
+        return output
+
+
 
 
 def convert_tokens(user_message_list, cg_tokens_dict):

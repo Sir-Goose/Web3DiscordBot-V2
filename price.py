@@ -1,5 +1,7 @@
 from pycoingecko import CoinGeckoAPI
 from web3 import Web3, HTTPProvider
+import yfinance as yf
+
 
 import requests
 import json
@@ -102,4 +104,9 @@ def get_historical_price_cg(token, date, cg_tokens_dictionary):
 
     return historical_price, token_id
 
+
+def get_stock_price(token):
+    stock = yf.Ticker(token)
+    stock_price = stock.info['currentPrice']
+    return stock_price
 

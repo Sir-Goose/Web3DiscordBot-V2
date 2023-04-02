@@ -1,11 +1,17 @@
 import discord
 import pandas as pd
+from discord.ext import commands, tasks
+
 
 import charting
 import formatter
 import price
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.presences = True
+intents.message_content = True
+
+client = discord.Client(intents=intents)
 
 cg_tokens_dict = pd.read_csv('cgtokens.csv', header=None, index_col=0, squeeze=True).to_dict()
 print("csv loaded")
@@ -16,6 +22,21 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     # lists servers bot is in
     print(client.guilds)
+    set_status.start()
+
+
+def get_status():
+    status = price.get_imp_price("imp")
+    status = formatter.format_imp_status(status)
+    return status
+
+
+@tasks.loop(minutes=30)
+async def set_status():
+    print("Attempting to set status")
+    status = get_status()
+    await client.change_presence(activity=discord.Game(name=status))
+    print(f'Status updated to: {status}')
 
 
 @client.event
@@ -64,8 +85,8 @@ def control_flow(user_message_list):
     if user_message_prefix == '$p':
 
         if token == 'imp':
-            type = 'imp_price'
-            output = price.get_imp_price(token, type)
+            'imp_price'
+            output = price.get_imp_price(token)
             output = formatter.format_imp(output)
             return output
 
@@ -97,7 +118,7 @@ def control_flow(user_message_list):
     if user_message_prefix == '$imp':
         token = 'imp'
         type = 'imp_price'
-        output = price.get_imp_price(token, type)
+        output = price.get_imp_price(token)
         output = formatter.format_imp(output)
         return output
 
@@ -109,8 +130,6 @@ def control_flow(user_message_list):
     if user_message_prefix == '$c' or user_message_prefix == '$chart':
         output = charting.get_chart(token, period, interval)
         return output
-
-
 
 
 def convert_tokens(user_message_list, cg_tokens_dict):
@@ -147,5 +166,5 @@ def meta_joke(message):
             return False
 
 
-# This has to be at the bottom of the file. No idea why but it doesn't work otherwise.
+# This has to be at the bottom of the file. No idea why but it doesn't work anywhere else.
 client.run('')

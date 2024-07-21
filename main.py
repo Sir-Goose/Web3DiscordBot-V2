@@ -5,6 +5,7 @@ import charting
 import formatter
 import price
 import sys
+from typing import List, Dict, Union, Optional
 
 intents = discord.Intents.default()
 intents.presences = True
@@ -12,34 +13,29 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-cg_tokens_dict = pd.read_csv('cgtokens.csv', header=None, index_col=0).squeeze(axis='columns').to_dict()
+cg_tokens_dict: Dict[str, str] = pd.read_csv('cgtokens.csv', header=None, index_col=0).squeeze(axis='columns').to_dict()
 print("csv loaded")
 
-
 @client.event
-async def on_ready():
+async def on_ready() -> None:
     print('We have logged in as {0.user}'.format(client))
-    # lists servers bot is in
     print(client.guilds)
     set_status.start()
 
-
-def get_status():
+def get_status() -> str:
     status = price.get_imp_price("imp")
     status = formatter.format_imp_status(status)
     return status
 
-
 @tasks.loop(minutes=30)
-async def set_status():
+async def set_status() -> None:
     print("Attempting to set status")
     status = get_status()
     await client.change_presence(activity=discord.Game(name=status))
     print(f'Status updated to: {status}')
 
-
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Message) -> None:
     if message.author == client.user:
         return
     print(f"{message.author}: {message.content}")
@@ -58,7 +54,6 @@ async def on_message(message):
     elif output == 'chart.png':
         print("sending chart")
         with open('chart.png', 'rb') as chart:
-
             picture = discord.File(chart)
             await message.channel.send(file=picture, reference=message)
     elif output != True:
@@ -70,11 +65,9 @@ async def on_message(message):
         print(f"<{emoji}>")
         return
 
-
-def control_flow(user_message_list):
+def control_flow(user_message_list: List[str]) -> Optional[Union[str, bool]]:
     user_message_prefix = user_message_list[0].lower()
 
-    # Check if token is provided
     if len(user_message_list) < 2:
         raise ValueError("Token not provided in the message")
 
@@ -88,9 +81,7 @@ def control_flow(user_message_list):
         period = interval = date = None
 
     if user_message_prefix == '$p':
-
         if token == 'imp':
-            'imp_price'
             output = price.get_imp_price(token)
             output = formatter.format_imp(output)
             return output
@@ -122,7 +113,6 @@ def control_flow(user_message_list):
 
     if user_message_prefix == '$imp':
         token = 'imp'
-        type = 'imp_price'
         output = price.get_imp_price(token)
         output = formatter.format_imp(output)
         return output
@@ -136,8 +126,7 @@ def control_flow(user_message_list):
         output = charting.get_chart(token, period, interval)
         return output
 
-
-def convert_tokens(user_message_list, cg_tokens_dict):
+def convert_tokens(user_message_list: List[str], cg_tokens_dict: Dict[str, str]) -> float:
     if len(user_message_list) < 4:
         raise ValueError("Not enough arguments. Usage: $convert <quantity> <token1> <token2>")
 
@@ -147,13 +136,11 @@ def convert_tokens(user_message_list, cg_tokens_dict):
 
     type = 'current'
 
-    # Get price for token one
     token_one_price = price.get_cg_price(token_one, type, cg_tokens_dict)
     if token_one_price is None or not token_one_price:
         raise ValueError(f"Unable to get price for {token_one}")
     token_one_price = token_one_price[0].replace(',', '')
 
-    # Get price for token two
     token_two_price = price.get_cg_price(token_two, type, cg_tokens_dict)
     if token_two_price is None or not token_two_price:
         raise ValueError(f"Unable to get price for {token_two}")
@@ -165,7 +152,7 @@ def convert_tokens(user_message_list, cg_tokens_dict):
     except ValueError:
         raise ValueError("Invalid numeric values for prices or quantity")
 
-def record_request(user_message_list):
+def record_request(user_message_list: List[str]) -> bool:
     message_text = ' '.join(user_message_list)
 
     with open('requests.txt', 'a') as external_file:
@@ -173,8 +160,7 @@ def record_request(user_message_list):
         external_file.close()
         return True
 
-
-def meta_joke(message):
+def meta_joke(message: str) -> bool:
     message = message.split()
     for i in range(len(message)):
         if message[i].lower() == 'meta':
@@ -182,7 +168,7 @@ def meta_joke(message):
         else:
             return False
 
-def get_key():
+def get_key() -> str:
     try:
         with open('key.txt', 'r') as file:
             key = file.read().strip()
@@ -196,6 +182,5 @@ def get_key():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         sys.exit(1)
-
 
 client.run(get_key())

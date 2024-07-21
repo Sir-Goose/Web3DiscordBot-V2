@@ -1,51 +1,39 @@
-def format_imp(output):
+from typing import List, Union
+
+def format_imp(output: float) -> str:
     output = round(output, 2)
-    # output = "```" + "IMP $" + str(output) + "```"
     output = f"```IMP ${str(output)} ```"
     return output
 
-def format_imp_status(output):
+def format_imp_status(output: float) -> str:
     output = round(output, 2)
     output = f"IMP ${str(output)}"
     return output
-def format_cg(output_list):
-    price = output_list[0]
-    change = output_list[1]
-    token_id = output_list[2]
-    # output = "```" + token_id.upper() + " $" + str(price) + " (" + str(
-    # change) + "%" + " 24h" + ")" + "```"
+
+def format_cg(output_list: List[Union[str, float]]) -> str:
+    price, change, token_id = output_list
     output = f"```{token_id.upper()} ${str(price)} ({str(change)}% 24h)```"
     return output
 
-
-def format_historical_cg(output, date, token_id):
+def format_historical_cg(output: float, date: str, token_id: str) -> str:
     output = round(output, 2)
     output = '{:,}'.format(output)
-    # output = "```" + token_id + " $" + str(output) + " at " + date + "```"
     output = f"```{token_id} was ${str(output)} on {date}```"
     return output
 
-
-def format_conversion(output):
+def format_conversion(output: float) -> str:
     output = round(output, 2)
     output = '{:,}'.format(output)
-    # output = "```" + output + "```"
     output = f"```{output}```"
     return output
 
-
-def format_status(output):
+def format_status(output: float) -> str:
     output = round(output, 2)
     output = f"IMP {str(output)} USD"
     return output
 
-
-def format_stock(token, output):
+def format_stock(token: str, output: float) -> str:
     price = round(output, 2)
     token = token.upper()
     output = f"```{token} ${price} USD```"
     return output
-
-
-
-

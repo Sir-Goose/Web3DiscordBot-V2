@@ -3,11 +3,12 @@ from web3 import Web3, HTTPProvider
 import yfinance as yf
 import requests
 import json
+from typing import Dict, List, Tuple, Union, Optional
 
 cg = CoinGeckoAPI()
 
 
-def get_imp_price(token):
+def get_imp_price(token: str) -> Optional[float]:
     if token == 'imp':
         # declare variables
         rpc_url = "https://rpc.ftm.tools/"
@@ -89,9 +90,8 @@ def get_imp_price(token):
         return impPrice
 
 
-def get_cg_price(token, type, cg_tokens_dict):
+def get_cg_price(token: str, type: str, cg_tokens_dict: Dict[str, str]) -> List[Union[str, float]]:
     if type == 'current':
-        # convert ticker to token id used by coingecko
         token_id = cg_tokens_dict[token]
         print(token_id)
 
@@ -107,11 +107,9 @@ def get_cg_price(token, type, cg_tokens_dict):
         return output_list
 
 
-def get_historical_price_cg(token, date, cg_tokens_dictionary):
-
+def get_historical_price_cg(token: str, date: str, cg_tokens_dictionary: Dict[str, str]) -> Tuple[float, str]:
     token_id = cg_tokens_dictionary[token]
     token_id = token_id.lower()
-
 
     print(date)
 
@@ -122,7 +120,7 @@ def get_historical_price_cg(token, date, cg_tokens_dictionary):
     return historical_price, token_id
 
 
-def get_stock_price(token):
+def get_stock_price(token: str) -> float:
     stock = yf.Ticker(token)
     stock_price = stock.info['currentPrice']
     return stock_price

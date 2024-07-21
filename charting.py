@@ -1,8 +1,8 @@
 import yfinance as yf
 import mplfinance as mpf
+from typing import Literal
 
-
-def get_chart(token, period, interval):
+def get_chart(token: str, period: str, interval: str) -> Literal['chart.png']:
     ticker = yf.Ticker(token)
     mc = mpf.make_marketcolors(up='#00bed4', down='#eb4d5c', edge='#131722', inherit=True)
     custom = mpf.make_mpf_style(base_mpf_style='nightclouds', facecolor='#131722', figcolor='#131722', marketcolors=mc)
@@ -10,4 +10,3 @@ def get_chart(token, period, interval):
     mpf.plot(ticker.history(period=period, interval=interval, actions=False), title=token.upper(), type='candle', style=custom,
              savefig=dict(fname='chart', bbox_inches='tight'))
     return 'chart.png'
-

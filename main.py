@@ -137,20 +137,32 @@ def control_flow(user_message_list):
 
 
 def convert_tokens(user_message_list, cg_tokens_dict):
+    if len(user_message_list) < 4:
+        raise ValueError("Not enough arguments. Usage: $convert <quantity> <token1> <token2>")
+
     quantity_one = user_message_list[1]
     token_one = user_message_list[2]
     token_two = user_message_list[3]
 
     type = 'current'
+
+    # Get price for token one
     token_one_price = price.get_cg_price(token_one, type, cg_tokens_dict)
+    if token_one_price is None or not token_one_price:
+        raise ValueError(f"Unable to get price for {token_one}")
     token_one_price = token_one_price[0].replace(',', '')
 
+    # Get price for token two
     token_two_price = price.get_cg_price(token_two, type, cg_tokens_dict)
+    if token_two_price is None or not token_two_price:
+        raise ValueError(f"Unable to get price for {token_two}")
     token_two_price = token_two_price[0].replace(',', '')
 
-    output = (float(token_one_price) * float(quantity_one)) / float(token_two_price)
-    return output
-
+    try:
+        output = (float(token_one_price) * float(quantity_one)) / float(token_two_price)
+        return output
+    except ValueError:
+        raise ValueError("Invalid numeric values for prices or quantity")
 
 def record_request(user_message_list):
     message_text = ' '.join(user_message_list)

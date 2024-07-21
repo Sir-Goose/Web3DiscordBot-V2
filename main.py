@@ -185,7 +185,8 @@ def meta_joke(message):
 def get_key():
     try:
         with open('key.txt', 'r') as file:
-            return file.read()
+            key = file.read().strip()
+            return str(key)
     except FileNotFoundError:
         print("Error: The file 'key.txt' was not found.")
         sys.exit(1)

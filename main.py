@@ -72,13 +72,19 @@ async def on_message(message):
 
 def control_flow(user_message_list):
     user_message_prefix = user_message_list[0].lower()
+
+    # Check if token is provided
+    if len(user_message_list) < 2:
+        raise ValueError("Token not provided in the message")
+
+    token = user_message_list[1].lower()
+
     try:
-        token = user_message_list[1].lower()
         period = user_message_list[2].lower()
         interval = user_message_list[3].lower()
         date = user_message_list[2]
     except IndexError:
-        pass
+        period = interval = date = None
 
     if user_message_prefix == '$p':
 
@@ -87,8 +93,6 @@ def control_flow(user_message_list):
             output = price.get_imp_price(token)
             output = formatter.format_imp(output)
             return output
-
-
         else:
             type = 'current'
             output_list = price.get_cg_price(token, type, cg_tokens_dict)
@@ -99,6 +103,8 @@ def control_flow(user_message_list):
         if token == 'imp':
             ...
         else:
+            if date is None:
+                raise ValueError("Date not provided for historical price")
             output, token_id = price.get_historical_price_cg(token, date, cg_tokens_dict)
             output = formatter.format_historical_cg(output, date, token_id)
             return output

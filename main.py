@@ -1,8 +1,6 @@
 import discord
 import pandas as pd
 from discord.ext import commands, tasks
-
-
 import charting
 import formatter
 import price
@@ -13,7 +11,7 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-cg_tokens_dict = pd.read_csv('cgtokens.csv', header=None, index_col=0, squeeze=True).to_dict()
+cg_tokens_dict = pd.read_csv('cgtokens.csv', header=None, index_col=0).squeeze(axis='columns').to_dict()
 print("csv loaded")
 
 
@@ -166,5 +164,4 @@ def meta_joke(message):
             return False
 
 
-# This has to be at the bottom of the file. No idea why but it doesn't work anywhere else.
 client.run('')

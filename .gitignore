@@ -2,3 +2,4 @@ pyrightconfig.json
 .venv
 __pycache__
 key.txt
+.DS_Store

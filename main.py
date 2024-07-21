@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 import charting
 import formatter
 import price
+import sys
 
 intents = discord.Intents.default()
 intents.presences = True
@@ -181,5 +182,19 @@ def meta_joke(message):
         else:
             return False
 
+def get_key():
+    try:
+        with open('key.txt', 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        print("Error: The file 'key.txt' was not found.")
+        sys.exit(1)
+    except IOError:
+        print("Error: There was an issue reading the file.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
 
-client.run('')
+
+client.run(get_key())

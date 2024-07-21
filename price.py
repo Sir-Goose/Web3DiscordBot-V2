@@ -1,15 +1,13 @@
 from pycoingecko import CoinGeckoAPI
 from web3 import Web3, HTTPProvider
 import yfinance as yf
-
-
 import requests
 import json
 
 cg = CoinGeckoAPI()
 
 
-def get_imp_price(token, type):
+def get_imp_price(token):
     if token == 'imp':
         # declare variables
         rpc_url = "https://rpc.ftm.tools/"
@@ -109,4 +107,3 @@ def get_stock_price(token):
     stock = yf.Ticker(token)
     stock_price = stock.info['currentPrice']
     return stock_price
-

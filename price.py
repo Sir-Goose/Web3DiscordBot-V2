@@ -8,7 +8,7 @@ from typing import Dict, List, Tuple, Union, Optional
 cg = CoinGeckoAPI()
 
 
-def get_imp_price(token: str) -> Optional[float]:
+def get_imp_price(token: str) -> float:
     if token == 'imp':
         # declare variables
         rpc_url = "https://rpc.ftm.tools/"
@@ -23,7 +23,7 @@ def get_imp_price(token: str) -> Optional[float]:
             contract = web3.eth.contract(address=Web3.to_checksum_address(address), abi=abi)
         except ValueError as e:
             print(f"Error creating contract: {e}")
-            return None
+            return 0
 
         # read pool balances
         # balance of IMP
@@ -57,10 +57,10 @@ def get_imp_price(token: str) -> Optional[float]:
 
             except Exception as e:
                 print(f"Error calling contract functions: {e}")
-                return None
+                return 0
         else:
             print("Contract is not defined")
-            return None
+            return 0
 
         # account for decimals
         impBalance = (impBalance / 1000000000)
@@ -88,6 +88,8 @@ def get_imp_price(token: str) -> Optional[float]:
         # imp price
         impPrice = (totalValueInUSD * (1 - 0.3)) / impBalance
         return impPrice
+    else:
+        return 0
 
 
 def get_cg_price(token: str, type: str, cg_tokens_dict: Dict[str, str]) -> List[Union[str, float]]:

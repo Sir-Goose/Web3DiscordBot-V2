@@ -107,6 +107,10 @@ def get_cg_price(token: str, type: str, cg_tokens_dict: Dict[str, str]) -> List[
         output_list = [token_price, token_change, token_id]
 
         return output_list
+    else:
+        raise ValueError(f"Unsupported type: {type}")
+
+
 
 
 def get_historical_price_cg(token: str, date: str, cg_tokens_dictionary: Dict[str, str]) -> Tuple[float, str]:

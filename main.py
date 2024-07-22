@@ -167,6 +167,7 @@ def meta_joke(message: str) -> bool:
             return True
         else:
             return False
+    return False
 
 def get_key() -> str:
     try:

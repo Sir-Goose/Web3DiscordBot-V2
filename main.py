@@ -58,7 +58,7 @@ async def on_message(message: discord.Message) -> None:
             await message.channel.send(file=picture, reference=message)
     elif output != True:
         print(f"<{output}>")
-        await message.channel.send(output, reference=message)
+        await message.channel.send(str(output), reference=message)
     elif output:
         emoji = '\N{THUMBS UP SIGN}'
         await message.add_reaction(emoji)

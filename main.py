@@ -93,7 +93,7 @@ def control_flow(user_message_list: List[str]) -> Optional[Union[str, bool]]:
 
     if user_message_prefix == '$h':
         if token == 'imp':
-          ...
+           ...
         else:
             if date is None:
                 raise ValueError("Date not provided for historical price")
@@ -123,6 +123,8 @@ def control_flow(user_message_list: List[str]) -> Optional[Union[str, bool]]:
         return output
 
     if user_message_prefix == '$c' or user_message_prefix == '$chart':
+        if period is None or interval is None:
+            raise ValueError("Period and interval must be provided for chart")
         output = charting.get_chart(token, period, interval)
         return output
 

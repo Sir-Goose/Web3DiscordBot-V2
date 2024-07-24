@@ -93,7 +93,7 @@ def control_flow(user_message_list: List[str]) -> Optional[Union[str, bool]]:
 
     if user_message_prefix == '$h':
         if token == 'imp':
-           ...
+          ...
         else:
             if date is None:
                 raise ValueError("Date not provided for historical price")
@@ -153,15 +153,15 @@ def convert_tokens(user_message_list: List[str], cg_tokens_dict: Dict[str, str])
         raise ValueError("Invalid numeric values for prices or quantity")
 
 def record_request(user_message_list: List[str]) -> bool:
-    message_text = '.join(user_message_list)
+    message_text = "".join(user_message_list)
 
     with open('requests.txt', 'a') as external_file:
         print(message_text, file=external_file)
         external_file.close()
         return True
 
-def meta_joke(message: List[str]) -> bool:
-    for word in message:
+def meta_joke(message: str) -> bool:
+    for word in message.split():
         if word.lower() == 'eta':
             return True
     return False

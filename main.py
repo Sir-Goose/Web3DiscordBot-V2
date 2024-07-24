@@ -5,7 +5,7 @@ import charting
 import formatter
 import price
 import sys
-from typing import List, Dict, Union, Optional
+from typing import List, Dict, Union, Optional, cast
 
 intents = discord.Intents.default()
 intents.presences = True
@@ -56,7 +56,7 @@ async def on_message(message: discord.Message) -> None:
         with open('chart.png', 'rb') as chart:
             picture = discord.File(chart)
             await message.channel.send(file=picture, reference=message)
-    elif output != True:
+    elif output!= True:
         print(f"<{output}>")
         await message.channel.send(str(output), reference=message)
     elif output:
@@ -93,7 +93,7 @@ def control_flow(user_message_list: List[str]) -> Optional[Union[str, bool]]:
 
     if user_message_prefix == '$h':
         if token == 'imp':
-            ...
+           ...
         else:
             if date is None:
                 raise ValueError("Date not provided for historical price")
@@ -139,12 +139,12 @@ def convert_tokens(user_message_list: List[str], cg_tokens_dict: Dict[str, str])
     token_one_price = price.get_cg_price(token_one, type, cg_tokens_dict)
     if token_one_price is None or not token_one_price:
         raise ValueError(f"Unable to get price for {token_one}")
-    token_one_price = token_one_price[0].replace(',', '')
+    token_one_price = cast(str, token_one_price[0]).replace(',', '')
 
     token_two_price = price.get_cg_price(token_two, type, cg_tokens_dict)
     if token_two_price is None or not token_two_price:
         raise ValueError(f"Unable to get price for {token_two}")
-    token_two_price = token_two_price[0].replace(',', '')
+    token_two_price = cast(str, token_two_price[0]).replace(',', '')
 
     try:
         output = (float(token_one_price) * float(quantity_one)) / float(token_two_price)
@@ -153,20 +153,17 @@ def convert_tokens(user_message_list: List[str], cg_tokens_dict: Dict[str, str])
         raise ValueError("Invalid numeric values for prices or quantity")
 
 def record_request(user_message_list: List[str]) -> bool:
-    message_text = ' '.join(user_message_list)
+    message_text = '.join(user_message_list)
 
     with open('requests.txt', 'a') as external_file:
         print(message_text, file=external_file)
         external_file.close()
         return True
 
-def meta_joke(message: str) -> bool:
-    message = message.split()
-    for i in range(len(message)):
-        if message[i].lower() == 'meta':
+def meta_joke(message: List[str]) -> bool:
+    for word in message:
+        if word.lower() == 'eta':
             return True
-        else:
-            return False
     return False
 
 def get_key() -> str:
